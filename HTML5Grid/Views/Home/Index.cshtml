@@ -1,0 +1,84 @@
+﻿@model HTML5Grid.Models.EmployeeDetails
+
+<table border="1">
+    <thead>
+    <td>
+        Job Family
+    </td>
+    <td>
+        Job Data
+    </td>
+    <td>
+        Job Code
+    </td>
+    <td>
+        Employee ID
+    </td>
+    <td>
+        Employee Name
+    </td>
+    </thead>
+    @foreach (var item in Model.JobDetails)
+    {
+        <tr>
+            <td class="jobFamily" id="@item.EmployeeId">
+                @Html.DropDownListFor(x => item.JobFamily, new List<SelectListItem>
+                {
+                      new SelectListItem { Text = item.JobFamily, Value = item.JobFamily, Selected=true}
+                }, new { @id = "jF" + item.EmployeeId})
+            </td>
+            <td>
+                @Html.DropDownListFor(x => item.JobData, new List<SelectListItem>
+                {
+                      new SelectListItem { Text = item.JobData, Value = item.JobData, Selected=true}
+                })
+            </td>
+            <td>
+                @Html.DropDownListFor(x => item.JobCode, new List<SelectListItem>
+                {
+                      new SelectListItem { Text = item.JobCode, Value = item.JobCode, Selected=true}
+                })
+            </td>
+            <td>@item.EmployeeId</td>
+            <td>@item.EmployeeName</td>
+        </tr>
+    }
+</table>
+<script>
+    var jobFamily = new Array();
+
+    $().ready(function () {
+
+    //Populate the dropdown values from respective models and keep it for reuse purpose
+     @foreach (var item in Model.JobFamilies)
+            {
+            <text>
+        var jF = { jobFamily: '@item.JobFamily', id: '@item.Id' };
+        var foundEntry = $.grep(jobFamily, function (v) {
+            return v.jobFamily === '@item.JobFamily';
+        });
+
+        //Add only distinctive values
+        if (foundEntry.length <= 0) { jobFamily.push(jF);}
+        </text>
+            }
+    })
+
+    //invoke the cell click based on class name
+    $('.jobFamily').click(function () {
+
+        //Get the selected value
+        var selectedValue = $("#jF" + this.id + " option:selected").text();
+
+        //Clear the options
+        $('#jF' + this.id).empty();
+
+        //Repopulate the options got from model during document.ready function
+        for (var i = 0; i < jobFamily.length;i++) {
+            $("#jF" + this.id).append('<option value=' + jobFamily[i].id + '>' + jobFamily[i].jobFamily + '</option>');
+        }
+
+        //Select the previously selected value
+        $("#jF" + this.id).find("option:contains(" + selectedValue + ")").attr('selected', 'selected');
+       })
+</script>
